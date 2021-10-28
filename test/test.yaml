@@ -1,5 +1,6 @@
 mail_address: test@gmail.com
-infile: /home/croux/Programmes/DILS_sfs/test/all_SNPs_subsampled.txt
+infile: /shared/ifbstor1/projects/metapop/snpDILS_v2/test/all_SNPs_subsampled.txt
+config_yaml: /shared/ifbstor1/projects/metapop/snpDILS_v2/test/test.yaml
 nspecies: 2
 nameA: ama 
 nameB: chi 
@@ -8,7 +9,6 @@ nB: 10
 nameOutgroup: NA
 useSFS: 1
 useOutgroup: 0
-config_yaml: /home/croux/Programmes/DILS_sfs/test/test.yaml
 timeStamp: i8U91jkfd
 population_growth: constant
 modeBarrier: bimodal
