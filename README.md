@@ -20,6 +20,7 @@
 7. [Rapid tuto](#7---rapid-tuto)  
 	1. [Clone the git depo](#clone-the-git-depo)  
 	2. [Small edits](#small-edits)  
+	3. [Run analysis](#run-analysis)  
 
 # 1 - snakemake  
 ## info  
