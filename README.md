@@ -202,4 +202,11 @@ git clone https://github.com/popgenomics/snpDILS
 ## Small edits  
 Then, edit a **Snakefile_Xpop** in order to adapt the variable **binpath**, corresponding to the pathway to the **bin** directory of the cloned git depository.  
 Similarly, edit a **DILS_Xpop.sh** in order to adapt the same variable.
+  
+## Run analysis  
+Move into the __snpDILS_v2/test__ sub-directory.  
+```
+../bin/DILS_2pop.sh test.yaml
+```
+
 

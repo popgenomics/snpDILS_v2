@@ -30,7 +30,7 @@ python = 'python2'
 # links to the codes
 #binpath = "/shared/mfs/data/home/croux/softwares/DILS_sfs/bin"
 #binpath = "/home/croux/Programmes/DILS_sfs/bin"
-binpath = "/shared/ifbstor1/projects/metapop/snpDILS/bin"
+binpath = "/shared/ifbstor1/projects/metapop/snpDILS_v2/bin"
 
 # general property
 nmultilocus = 200 # number of multilocus simulations per iteration (1000)

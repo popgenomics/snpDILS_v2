@@ -26,7 +26,8 @@
 
 python = 'pypy'
 
-binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
+#binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
+binpath = "/shared/ifbstor1/projects/metapop/snpDILS_v2/bin"
 #binpath = "/tools/bin"
 
 nmultilocus = 1000 # number of multilocus simulations per iteration (1000)
