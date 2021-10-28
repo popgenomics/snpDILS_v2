@@ -202,12 +202,20 @@ git clone https://github.com/popgenomics/snpDILS
   
 ## Small edits  
 Then, edit a **Snakefile_Xpop** in order to adapt the variable **binpath**, corresponding to the pathway to the **bin** directory of the cloned git depository.  
-Similarly, edit a **DILS_Xpop.sh** in order to adapt the same variable.
+Similarly, edit a **DILS_Xpop.sh** in order to adapt the same variable.  
+The goal of these two small edits is to set the full pathways of all scripts + programs located into the **/bin** subdirectory of the git depository.  
+
+And finally, don't forget to adapt pathways of the two input files within the **.yaml** file, at the following variables:
+```
+infile: /shared/ifbstor1/projects/metapop/snpDILS_v2/test/all_SNPs_subsampled.txt
+config_yaml: /shared/ifbstor1/projects/metapop/snpDILS_v2/test/test.yaml
+```  
   
-## Run analysis  
-Move into the __snpDILS_v2/test__ sub-directory.  
+## Run analysis (example)  
+To perform the **test** analysis, first move into the __snpDILS_v2/test__ sub-directory and then:   
 ```
 ../bin/DILS_2pop.sh test.yaml
 ```
+Of course, your analysis can be performed in the directory of your choice, just, adapt the pathways into the **.yaml** in order to let **DILS** finding the pathway of the input files.  
 
 
