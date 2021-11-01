@@ -1,0 +1,45 @@
+# in python
+import dadi
+from dadi import Misc
+from dadi import Spectrum
+import matplotlib.pyplot as pyplot
+
+filename = "coding_out.out"
+dd = Misc.make_data_dict(filename)
+
+summary_data = {}
+for snp in dd:
+	for species in dd[snp]['calls'].keys():
+		if species not in summary_data:
+			summary_data[species] = 0
+		n_tmp = dd[snp]['calls'][species][0] + dd[snp]['calls'][species][1]
+		if n_tmp > summary_data[species]:
+			summary_data[species] = n_tmp
+
+
+# maximizing the projection by maximizing the number of segregating sites in our final FS
+pops = list(summary_data.keys())
+pop1 = pops[0]
+pop2 = pops[5]
+
+res = [0, 0, 0] # nA; nB; S
+for nA in range(4, summary_data[pop1]+1, 2):
+	for nB in range(4, summary_data[pop2]+1, 2):
+		print("{0}\t{1}".format(nA, nB))
+		fs = Spectrum.from_data_dict(dd, pop_ids = [pop1, pop2], projections = [nA, nB], polarized = False)
+		S = fs.S()
+		if S > res[2]:
+			res[0] = nA
+			res[1] = nB
+			res[2] = S
+
+res
+fs = Spectrum.from_data_dict(dd, pop_ids = [pop1, pop2], projections = [res[0], res[1]], polarized = False)
+
+# plot
+# https://dadi.readthedocs.io/en/latest/user-guide/plotting/
+pyplot.figure()
+dadi.Plotting.plot_single_2d_sfs(fs, vmin=1)
+pyplot.show()
+pyplot.close()
+

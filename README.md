@@ -218,4 +218,30 @@ To perform the **test** analysis, first move into the __snpDILS_v2/test__ sub-di
 ```
 Of course, your analysis can be performed in the directory of your choice, just, adapt the pathways into the **.yaml** in order to let **DILS** finding the pathway of the input files.  
 
+# 9 - fasta2dadi  
+We add a small python script that can be used with **pypy** instead of **python3** (but python3 works fine also, just slower).  
+This script takes as __input file__ a __fasta file__ that can be used in **DILS**, and produces a SNP data table that can be used by DaDi, Moments or snpDILS.  
+```
+Ing	Out	Allele1	ama	chi	flo	mal	ros	txn	vul	zel	Allele2	ama	chi	flo	mal	ros	txn	vul	zel	Gene	Position
+TGC	TGC	G	20	20	20	20	20	20	20	19	T	0	0	0	0	0	0	0	1	Hmel219002_6	6
+AGT	AGT	G	18	20	20	20	16	20	19	20	C	0	0	0	0	4	0	1	0	Hmel219002_6	24
+ACC	ACC	C	19	20	20	20	20	20	20	20	T	1	0	0	0	0	0	0	0	Hmel219002_6	61
+CCA	CCA	C	20	5	0	20	20	0	20	14	T	0	15	20	0	0	20	0	6	Hmel219002_6	62
+AAG	AAG	A	20	20	20	20	19	20	20	20	T	0	0	0	0	1	0	0	0	Hmel219002_6	82
+GCT	GCT	C	20	15	20	20	20	20	20	20	T	0	5	0	0	0	0	0	0	Hmel219002_6	84
+CGG	CGG	G	20	20	20	20	11	20	7	14	A	0	0	0	0	9	0	13	6	Hmel219002_6	95
+CCC	CCC	C	20	20	20	20	16	20	19	20	T	0	0	0	0	4	0	1	0	Hmel219002_6	107
+TCA	TCA	C	20	18	20	20	20	20	20	20	T	0	2	0	0	0	0	0	0	Hmel219002_6	119
+```
+  
+To run it:  
+```
+pypy3 test.py -i mytilus_renamed.fas -o coding_noOut_mussels.out -r coding
+```
+
+Or more help here:
+```
+pypy3 test.py -h
+```
+
 
