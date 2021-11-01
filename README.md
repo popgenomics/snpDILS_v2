@@ -17,10 +17,11 @@
 	2. [config.yaml](#configyaml)  
 7. [Workflow](#7---workflow)  
 	1. [Two populations](#two-populations)  
-7. [Rapid tuto](#7---rapid-tuto)  
+8. [Rapid tuto](#8---rapid-tuto)  
 	1. [Clone the git depo](#clone-the-git-depo)  
 	2. [Small edits](#small-edits)  
 	3. [Run analysis](#run-analysis)  
+9. [fasta2dadi](#9---fasta2dadi)  
 
 # 1 - snakemake  
 ## info  
