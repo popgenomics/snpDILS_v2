@@ -237,12 +237,12 @@ TCA	TCA	C	20	18	20	20	20	20	20	20	T	0	2	0	0	0	0	0	0	Hmel219002_6	119
   
 To run it:  
 ```
-pypy3 test.py -i mytilus_renamed.fas -o coding_noOut_mussels.out -r coding
+pypy3 fasta2dadi.py -i mytilus_renamed.fas -o coding_noOut_mussels.out -r coding
 ```
 
 Or more help here:
 ```
-pypy3 test.py -h
+pypy3 fasta2dadi.py -h
 ```
 
 
