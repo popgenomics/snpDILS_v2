@@ -217,7 +217,7 @@ To perform the **test** analysis, first move into the __snpDILS_v2/test__ sub-di
 ```
 ../bin/DILS_2pop.sh test.yaml
 ```
-Of course, your analysis can be performed in the directory of your choice, just, adapt the pathways into the **.yaml** in order to let **DILS** finding the pathway of the input files.  
+Of course, your analysis can be performed in the directory of your choice, just, adapt the pathways into the **.yaml** in order to let **snpDILS** finding the pathway of the input files.  
 
 # 9 - fasta2dadi  
 We add a small python script that can be used with **pypy** instead of **python3** (but python3 works fine also, just slower).  
