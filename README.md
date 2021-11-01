@@ -221,7 +221,7 @@ Of course, your analysis can be performed in the directory of your choice, just,
 
 # 9 - fasta2dadi  
 We add a small python script that can be used with **pypy** instead of **python3** (but python3 works fine also, just slower).  
-This script takes as __input file__ a __fasta file__ that can be used in **DILS**, and produces a SNP data table that can be used by DaDi, Moments or snpDILS.  
+This script takes as __input file__ a __fasta file__ that can be used in **DILS**, and produces a SNP data table that can be used by **DaDi**, **Moments** or **snpDILS**.  
 ```
 Ing	Out	Allele1	ama	chi	flo	mal	ros	txn	vul	zel	Allele2	ama	chi	flo	mal	ros	txn	vul	zel	Gene	Position
 TGC	TGC	G	20	20	20	20	20	20	20	19	T	0	0	0	0	0	0	0	1	Hmel219002_6	6
@@ -237,12 +237,14 @@ TCA	TCA	C	20	18	20	20	20	20	20	20	T	0	2	0	0	0	0	0	0	Hmel219002_6	119
   
 To run it:  
 ```
-pypy3 fasta2dadi.py -i mytilus_renamed.fas -o coding_noOut_mussels.out -r coding
+python3 fasta2dadi.py -i mytilus_renamed.fas -o coding_noOut_mussels.out -r coding
 ```
 
 Or more help here:
 ```
-pypy3 fasta2dadi.py -h
+python3 fasta2dadi.py -h
 ```
+  
+If you have pypy installed, use it instead of python3.  
 
 
