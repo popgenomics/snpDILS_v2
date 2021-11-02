@@ -29,10 +29,23 @@ import sys
 import os
 import time
 
-if len(sys.argv) != 13:
-	print("\n\tsubmit_simulations_2pop.py [nmultilocus] [iteration] [model: SI_x AM_x IM_x SC_x PSC_x PAM_x] [nameA] [nameB] [sub_dir_sim] [sub_dir_model] [config_yaml] [project's directory name, i.e, timeStamp] [beta or bimodal] [binpath]")
-	print("\n\tex: submit_simulations_2pop_popGrowth.py 1000 2 SI_1N flo mal sim_SI_1N SI_1N config.yaml Ng4PymB1dy beta\n\tto simulate 1000 multilocus simulations at the second iteration, in the folder sim_SI_1N") 
+if len(sys.argv) != 12:
+	print("\n\tsubmit_simulations_2pop.py [outgroup] [nmultilocus] [iteration] [model: SI_x AM_x IM_x SC_x PSC_x PAM_x] [nameA] [nameB] [sub_dir_sim] [sub_dir_model] [config_yaml] [project's directory name, i.e, timeStamp] [beta or bimodal] [binpath]")
+	print("\n\tex: submit_simulations_2pop.py 1 1000 2 SI_1N flo mal sim_SI_1N SI_1N config.yaml Ng4PymB1dy beta\n\tto simulate 1000 multilocus simulations at the second iteration, in the folder sim_SI_1N, with outgroup") 
 	sys.exit(0)
+
+#outgroup = int(sys.argv[1])
+#nmultilocus = int(sys.argv[2]) # 10000
+#iteration = int(sys.argv[3]) # 2
+#model = sys.argv[4]
+#nameA = sys.argv[5] # name of the species A
+#nameB = sys.argv[6] # name of the species B
+#sub_dir_sim = sys.argv[7] # name of the subdir where the simulations will be run
+#sub_dir_model = sys.argv[8] # name of the sub_sub_dir containing ABCstat.txt
+#config_yaml = sys.argv[9]
+#timeStamp = sys.argv[10]
+#modeBarrier = sys.argv[11]
+#binpath = sys.argv[12]
 
 outgroup = int(sys.argv[1])
 nmultilocus = int(sys.argv[2]) # 10000
@@ -44,9 +57,7 @@ sub_dir_sim = sys.argv[7] # name of the subdir where the simulations will be run
 sub_dir_model = sys.argv[8] # name of the sub_sub_dir containing ABCstat.txt
 config_yaml = sys.argv[9]
 timeStamp = sys.argv[10]
-modeBarrier = sys.argv[11]
-binpath = sys.argv[12]
-
+binpath = sys.argv[11]
 path = os.getcwd() + '/{0}'.format(timeStamp)
 
 test_bpfile = os.path.isfile('{0}/bpfile'.format(path))
@@ -77,10 +88,13 @@ if mscommand == "":
 
 #tmp = "mkdir {0}/{1}; ".format(path, sub_dir_sim)
 #tmp += "mkdir {0}/{1}/{2}_{3}; ".format(path, sub_dir_sim, sub_dir_model, iteration)
-tmp = "cp {0}/bpfile {0}/{1}/{2}_{3}; ".format(path, sub_dir_sim, sub_dir_model, iteration)
-tmp += "cd {0}/{1}/{2}_{3}; ".format(path, sub_dir_sim, sub_dir_model, iteration)
-tmp += "python {0}/priorgen_2pop_popGrowth.py {1} {2} {3} | {0}/msnsam tbs {4} {5} | pypy {0}/mscalc_2pop_SFS.py {6}".format(binpath, model, nmultilocus, config_yaml, nmultilocus*nlocus, mscommand, outgroup)
+tmp = "cp {0}/bpfile {0}/{1}/{2}_{3}/; ".format(path, sub_dir_sim, sub_dir_model, iteration)
+tmp += "cd {0}/{1}/{2}_{3}/; ".format(path, sub_dir_sim, sub_dir_model, iteration)
+tmp += "python {0}/priorgen_2pop_popGrowth.py {1} {2} {3} | java -jar {0}/msms3.2rc-b163.jar tbs {4} {5} | pypy {0}/mscalc_2pop_SFS.py {6}".format(binpath, model, nmultilocus, config_yaml, nmultilocus*nlocus, mscommand, outgroup)
+#tmp = "cp {0}/bpfile {0}/{1}/{2}_{3}; ".format(path, sub_dir_sim, sub_dir_model, iteration)
+#tmp += "cd {0}/{1}/{2}_{3}; ".format(path, sub_dir_sim, sub_dir_model, iteration)
+#tmp += "python {0}/priorgen_2pop_popGrowth.py {1} {2} {3} | {0}/msnsam tbs {4} {5} | pypy {0}/mscalc_2pop_SFS.py {6}".format(binpath, model, nmultilocus, config_yaml, nmultilocus*nlocus, mscommand, outgroup)
 
 print(tmp)
-os.system(tmp) # to submit the job using slurm
+#os.system(tmp) # to submit the job using slurm
 

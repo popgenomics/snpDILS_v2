@@ -4,10 +4,12 @@ import sys
 import os
 
 infileName = sys.argv[1] # dadi's input file
-nA = int(sys.argv[2]) # number of sequences from population A
-nB = int(sys.argv[3]) # number of sequences from population B
-use_outgroup = int(sys.argv[4]) # 0 to fold; 1 to unfold
-binpath = sys.argv[5] # path of DILS directory containing all binarys
+nameA = sys.argv[2] # name of species A
+nameB = sys.argv[3] # name of species B
+nA = int(sys.argv[4]) # number of sequences from population A
+nB = int(sys.argv[5]) # number of sequences from population B
+use_outgroup = int(sys.argv[6]) # 0 to fold; 1 to unfold
+binpath = sys.argv[7] # path of DILS directory containing all binarys
 
 # function converting a recorded gene into a ms like output
 def dadi2ms(gene, use_outgroup):
@@ -43,42 +45,47 @@ def dadi2ms(gene, use_outgroup):
 genes = {}
 infile = open(infileName, 'r')
 header = infile.readline().strip().split('\t')
+nCol = len(header)
+speciesA_col = [ i for i in range(len(header)) if header[i]==nameA ]
+speciesB_col = [ i for i in range(len(header)) if header[i]==nameB ]
+
 for line in infile:
 	line = line.strip().split('\t')
-	gene_tmp = line[8]
-	position_tmp = int(line[9])
+	gene_tmp = line[ header.index('Gene') ]
+	position_tmp = int(line[ header.index('Position') ])
 	outgroup_tmp = line[1]
 	
 	# allele 1	
 	allele1_tmp = line[2]
-	nAllele1_spA_tmp = int(line[3])
-	nAllele1_spB_tmp = int(line[4])
+	nAllele1_spA_tmp = int(line[ speciesA_col[0] ])
+	nAllele1_spB_tmp = int(line[ speciesB_col[0] ])
 
 	# allele 2	
-	allele2_tmp = line[5]
-	nAllele2_spA_tmp = int(line[6])
-	nAllele2_spB_tmp = int(line[7])
+	allele2_tmp = line[ header.index('Allele2') ]
+	nAllele2_spA_tmp = int(line[ speciesA_col[1] ])
+	nAllele2_spB_tmp = int(line[ speciesB_col[1] ])
 	
-	if gene_tmp not in genes:
-		genes[gene_tmp] = {}
-		genes[gene_tmp]['nSNPs'] = 0
-		genes[gene_tmp]['position'] = []
-		genes[gene_tmp]['allele1'] = []
-		genes[gene_tmp]['allele2'] = []
-		genes[gene_tmp]['outgroup'] = []
-		genes[gene_tmp]['nAllele1_spA'] = []
-		genes[gene_tmp]['nAllele2_spA'] = []
-		genes[gene_tmp]['nAllele1_spB'] = []
-		genes[gene_tmp]['nAllele2_spB'] = []
-	genes[gene_tmp]['nSNPs'] += 1
-	genes[gene_tmp]['position'].append(position_tmp)
-	genes[gene_tmp]['allele1'].append(allele1_tmp)
-	genes[gene_tmp]['allele2'].append(allele2_tmp)
-	genes[gene_tmp]['outgroup'].append(outgroup_tmp)
-	genes[gene_tmp]['nAllele1_spA'].append(nAllele1_spA_tmp)
-	genes[gene_tmp]['nAllele2_spA'].append(nAllele2_spA_tmp)
-	genes[gene_tmp]['nAllele1_spB'].append(nAllele1_spB_tmp)
-	genes[gene_tmp]['nAllele2_spB'].append(nAllele2_spB_tmp)
+	if (nAllele1_spA_tmp+nAllele1_spB_tmp)>0 and (nAllele2_spA_tmp+nAllele2_spB_tmp)>0:
+		if gene_tmp not in genes:
+			genes[gene_tmp] = {}
+			genes[gene_tmp]['nSNPs'] = 0
+			genes[gene_tmp]['position'] = []
+			genes[gene_tmp]['allele1'] = []
+			genes[gene_tmp]['allele2'] = []
+			genes[gene_tmp]['outgroup'] = []
+			genes[gene_tmp]['nAllele1_spA'] = []
+			genes[gene_tmp]['nAllele2_spA'] = []
+			genes[gene_tmp]['nAllele1_spB'] = []
+			genes[gene_tmp]['nAllele2_spB'] = []
+		genes[gene_tmp]['nSNPs'] += 1
+		genes[gene_tmp]['position'].append(position_tmp)
+		genes[gene_tmp]['allele1'].append(allele1_tmp)
+		genes[gene_tmp]['allele2'].append(allele2_tmp)
+		genes[gene_tmp]['outgroup'].append(outgroup_tmp)
+		genes[gene_tmp]['nAllele1_spA'].append(nAllele1_spA_tmp)
+		genes[gene_tmp]['nAllele2_spA'].append(nAllele2_spA_tmp)
+		genes[gene_tmp]['nAllele1_spB'].append(nAllele1_spB_tmp)
+		genes[gene_tmp]['nAllele2_spB'].append(nAllele2_spB_tmp)
 infile.close()
 
 

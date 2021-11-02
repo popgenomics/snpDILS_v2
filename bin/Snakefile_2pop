@@ -141,7 +141,7 @@ rule dadi2ABC:
 	shell:
 		"""
 		cd {timeStamp}
-		python {binpath}/dadi2ABC.py {infile} {nA} {nB} {useOutgroup} {binpath}
+		python {binpath}/dadi2ABC.py {infile} {nameA} {nameB} {nA} {nB} {useOutgroup} {binpath} 
 		"""
 		
 # move files
