@@ -29,11 +29,11 @@
 #################################################################################################################################
 
 import sys
+from random import shuffle
+from random import randint
 from numpy.random import uniform
 from numpy.random import binomial
 from numpy.random import beta
-from random import shuffle
-from random import randint
 
 def produceBarriers(nLoci, nBarriers):
 	# produces a vector of 0 (non barrier) or 1 (barrier), of size equal to the number of loci
@@ -41,6 +41,7 @@ def produceBarriers(nLoci, nBarriers):
 	shuffle(barriers)
 	return(barriers)
 
+	
 help = "\t\033[1;31;40mTakes one model specifier, a number of multilocus simulations and a config.yaml file containing prior boundaries as arguments:\033[0m\n\t\t"
 help += "\n\t\t".join(["SC_1M_1N", "SC_1M_2N", "SC_2M_1N", "SC_2M_2N", "AM_1M_1N", "AM_1M_2N", "AM_2M_1N", "AM_2M_2N", "IM_1M_1N", "IM_1M_2N", "IM_2M_1N", "IM_2M_2N", "SI_1N", "SI_2N", "PAN_1N", "PAN_2N"])
 help += "\n\n"
@@ -78,8 +79,7 @@ for i in config_yaml:
 		M_bound[0] = float(i[1])
 	if(i[0] == 'M_max'):
 		M_bound[1] = float(i[1])
-	if(i[0] == 'modeBarrier'):
-		# is equal to "beta" or "bimodal"
+	if(i[0] == 'modeBarrier'): # is equal to "beta" or "bimodal"
 		modeBarrier = i[1].replace(" ", "")
 config_yaml.close()
 
@@ -98,34 +98,29 @@ min_Tam = 0.5
 # read bpfile
 infile = open("bpfile", "r")
 tmp = infile.readline()
-L = infile.readline().strip().split("\t")
+nSNPs = infile.readline().strip().split("\t")
 nsamA = infile.readline().strip().split("\t")
 nsamB = infile.readline().strip().split("\t")
-theta = infile.readline().strip().split("\t")
-rho = infile.readline().strip().split("\t")
 infile.close()
 
 # number of loci
-nLoci = len(L)
+nLoci = len(nSNPs)
 
 # sum of nsamA + nsamB
 nsam_tot = [ int(nsamA[i]) + int(nsamB[i]) for i in range(nLoci) ]
 
+# prior of parameters
+N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
+N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
+Na = [ 1.0 for i in range(nMultilocus) ]
 
+founders1 = uniform(low = 0, high = 1, size = nMultilocus)
+founders2 = uniform(low = 0, high = 1, size = nMultilocus)
 
 if sys.argv[1] == "SC_1M_1N":
 	# secondary contact
 	# ms tbs 10000 -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -n 2 tbs -en tbs 1 tbs -en tbs 2 tbs -eM tbs 0 -ej tbs 2 1 -eN tbs tbs
 	# nsamtot theta rho L nsamA nsamB M12 M21 N1 N2 Tsc Tsplit Tsplit Na
-
-	# param multilocus: values that will be printed in priorfile.txt
-	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -153,13 +148,6 @@ if sys.argv[1] == "SC_1M_1N":
 
 if sys.argv[1] == "SC_1M_2N":
 	# param multilocus: values that will be printed in priorfile.txt
-	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -195,12 +183,6 @@ if sys.argv[1] == "SC_1M_2N":
 if sys.argv[1] == "SC_2M_1N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -255,13 +237,6 @@ if sys.argv[1] == "SC_2M_1N":
 
 if sys.argv[1] == "SC_2M_2N":
 	# param multilocus: values that will be printed in priorfile.txt
-	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -328,12 +303,6 @@ if sys.argv[1] == "SC_2M_2N":
 if sys.argv[1] == "AM_1M_1N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -361,11 +330,6 @@ if sys.argv[1] == "AM_1M_1N":
 if sys.argv[1] == "AM_1M_2N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
 
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -404,12 +368,6 @@ if sys.argv[1] == "AM_1M_2N":
 if sys.argv[1] == "AM_2M_1N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -465,12 +423,6 @@ if sys.argv[1] == "AM_2M_1N":
 if sys.argv[1] == "AM_2M_2N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -512,6 +464,7 @@ if sys.argv[1] == "AM_2M_2N":
 		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
 		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
 		
+		# vectors of size 'nLoci' containing parameters
 		if modeBarrier == "beta":
 			scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
 			scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
@@ -535,12 +488,6 @@ if sys.argv[1] == "AM_2M_2N":
 if sys.argv[1] == "IM_1M_1N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -568,12 +515,6 @@ if sys.argv[1] == "IM_1M_1N":
 if sys.argv[1] == "IM_1M_2N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -612,12 +553,6 @@ if sys.argv[1] == "IM_1M_2N":
 if sys.argv[1] == "IM_2M_1N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -660,6 +595,7 @@ if sys.argv[1] == "IM_2M_1N":
 			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
 			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
 
+	
 		for locus in range(nLoci):
 			# SC print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], M12_vec[locus], M21_vec[locus], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}\t{14:.5f}\t{15:.5f}\t{16:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], N1[sim], N2[sim], Tdem1[sim], founders1[sim]*Na[sim], Tdem2[sim], founders2[sim]*Na[sim], M12_vec[locus], M21_vec[locus], Tsplit[sim], Tsplit[sim], Na[sim]))
@@ -673,12 +609,6 @@ if sys.argv[1] == "IM_2M_1N":
 if sys.argv[1] == "IM_2M_2N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## Miration rates
 	M12 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
 	M21 = uniform(low = M_bound[0], high = M_bound[1], size = nMultilocus)
@@ -745,12 +675,6 @@ if sys.argv[1] == "IM_2M_2N":
 if sys.argv[1] == "SI_1N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## times
 	Tsplit = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)
 	Tdem1 = [ uniform(low = 0, high = Tsplit[i], size = 1)[0] for i in range(nMultilocus) ]
@@ -773,12 +697,6 @@ if sys.argv[1] == "SI_1N":
 if sys.argv[1] == "SI_2N":
 	# param multilocus: values that will be printed in priorfile.txt
 	## N = N_pop_i / Nref
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N2 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	Na = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	founders2 = uniform(low = 0, high = 1, size = nMultilocus)
-
 	## times
 	Tsplit = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)
 	Tdem1 = [ uniform(low = 0, high = Tsplit[i], size = 1)[0] for i in range(nMultilocus) ]
@@ -807,48 +725,4 @@ if sys.argv[1] == "SI_2N":
 	outfile.write(priorfile)
 	outfile.close()
 
-
-if sys.argv[1] == "PAN_1N":
-	# PAN : msnsam tbs 10000 -t tbs -r tbs tbs -eN 0 tbs -eN tbs tbs
-	# param multilocus: values that will be printed in priorfile.txt
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	Tdem1 = [ uniform(low = T_bound[0], high = T_bound[1], size = 1)[0] for i in range(nMultilocus) ]
-
-	# param monolocus: values that will be read by ms
-	priorfile = "N1\tfounders1\tTdem1\n"
-	for sim in range(nMultilocus):
-		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\n".format(N1[sim], founders1[sim], Tdem1[sim])
-		
-		for locus in range(nLoci):
-			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], N1[sim], Tdem1[sim], N1[sim]*founders1[sim]))
-	outfile = open("priorfile.txt", "w")
-	outfile.write(priorfile)
-	outfile.close()
-
-
-if sys.argv[1] == "PAN_2N":
-	# PAN : msnsam tbs 10000 -t tbs -r tbs tbs -eN 0 tbs -eN tbs tbs
-	# param multilocus: values that will be printed in priorfile.txt
-	N1 = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	founders1 = uniform(low = 0, high = 1, size = nMultilocus)
-	Tdem1 = [ uniform(low = T_bound[0], high = T_bound[1], size = 1)[0] for i in range(nMultilocus) ]
-	
-	shape_N_a = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
-	shape_N_b = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
-
-	# param monolocus: values that will be read by ms
-	priorfile = "N1\tfounders1\tTdem1\tshape_N_a\tshape_N_b\n"
-	for sim in range(nMultilocus):
-		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\n".format(N1[sim], founders1[sim], Tdem1[sim], shape_N_a[sim], shape_N_b[sim])
-		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim]) # to centerize the beta distribution around 1
-		N1_vec = [ i/rescale for i in scalar_N ]
-		
-		for locus in range(nLoci):
-			# PAN : msnsam tbs 10000 -t tbs -r tbs tbs -eN 0 tbs -eN tbs tbs
-			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}".format(nsam_tot[locus], float(theta[locus])*N1_vec[locus], rho[locus], L[locus], N1[sim], Tdem1[sim], N1[sim]*founders1[sim]))
-	outfile = open("priorfile.txt", "w")
-	outfile.write(priorfile)
-	outfile.close()
 

@@ -52,10 +52,11 @@ def provideTimes(Tsplit, Tsmall, nMultilocus):
 
 def randomBeta(posterior, nMultilocus):
 	estimate = median(posterior)
-	a = 15.0
-	b = 15.0
+	a = 50.0
+	b = 50.0
 	scalar_tmp = beta(a=a, b=b, size=nMultilocus)
 	scalar = [ i/(a/(a+b)) for i in scalar_tmp ]
+	
 	res = [ estimate * i for i in scalar ]
 	return(res)
 
@@ -89,15 +90,13 @@ modePrior = sys.argv[5] # joint / disjoint / randomBeta
 # read bpfile
 infile = open("bpfile", "r")
 tmp = infile.readline()
-L = infile.readline().strip().split("\t")
+nSNPs = infile.readline().strip().split("\t")
 nsamA = infile.readline().strip().split("\t")
 nsamB = infile.readline().strip().split("\t")
-theta = infile.readline().strip().split("\t")
-rho = infile.readline().strip().split("\t")
 infile.close()
 
 # number of loci
-nLoci = len(L)
+nLoci = len(nSNPs)
 
 # sum of nsamA + nsamB
 nsam_tot = [ int(nsamA[i]) + int(nsamB[i]) for i in range(nLoci) ]
@@ -122,22 +121,21 @@ for line in infile:
 		if(posterior_value)<0:
 			posterior_value = 0.00001
 		posterior[ params_posterior[cnt-1] ].append(posterior_value)
-#	for i in line:
-#		cnt += 1
-#		posterior[ params_posterior[cnt-1] ].append(float(i))
 infile.close()
 
 migration_models = ['SC_1M_1N', 'SC_2M_1N', 'SC_1M_2N', 'SC_2M_2N', 'AM_1M_1N', 'AM_2M_1N', 'AM_1M_2N', 'AM_2M_2N', 'IM_1M_1N', 'IM_2M_1N', 'IM_1M_2N', 'IM_2M_2N']
 
 # get the lines of the posterior used for the simulations: vector of length nMultilocus
-#used_posterior = randint(cnt, size=nMultilocus)
+# used_posterior = randint(cnt, size=nMultilocus)
 
 if modePrior == "joint": # modePrior in {joint; disjoint; randomBeta}, where joint takes the exact joint values of the posterior as a prior; disjoint takes random associations of parameter values from posterior; randombeta simulates a beta distribution around the median of the posterior
 	used_posterior = [ randint(0, nLines-1) if nLines>1 else 0 for i in range(nMultilocus) ]
 	N1 = [ posterior['N1'][i] for i in used_posterior ]
+	
 	if 'PAN' not in sys.argv[1]:
 		N2 = [ posterior['N2'][i] for i in used_posterior ]
-		Na = [ posterior['Na'][i] for i in used_posterior ]
+#		Na = [ posterior['Na'][i] for i in used_posterior ]
+		Na = [ 1 for i in used_posterior ]
 		Tsplit = [ posterior['Tsplit'][i] for i in used_posterior ]
 		founders2 = [ posterior['founders2'][i] for i in used_posterior ]
 		Tdem2 = [ posterior['Tdem2'][i] if posterior['Tdem2'][i]<posterior['Tsplit'][i] else posterior['Tsplit'][i] for i in used_posterior ]
@@ -175,7 +173,8 @@ else:
 			used_posterior = [ randint(0, nLines-1) if nLines>1 else 0  for i in range(nMultilocus) ]
 			N2 = [ posterior['N2'][i] for i in used_posterior ]
 			used_posterior = [ randint(0, nLines-1) if nLines>1 else 0  for i in range(nMultilocus) ]
-			Na = [ posterior['Na'][i] for i in used_posterior ]
+			#Na = [ posterior['Na'][i] for i in used_posterior ]
+			Na = [ 1 for i in used_posterior ]
 			used_posterior = [ randint(0, nLines-1) if nLines>1 else 0  for i in range(nMultilocus) ]
 			Tsplit = [ posterior['Tsplit'][i] for i in used_posterior ]
 			used_posterior = [ randint(0, nLines-1) if nLines>1 else 0  for i in range(nMultilocus) ]
@@ -191,7 +190,7 @@ else:
 			shape_N_a = [ posterior['shape_N_a'][i] for i in used_posterior ]
 			used_posterior = [ randint(0, nLines-1) if nLines>1 else 0  for i in range(nMultilocus) ]
 			shape_N_b = [ posterior['shape_N_b'][i] for i in used_posterior ]
-		
+
 		if sys.argv[1] in migration_models:
 			used_posterior = [ randint(0, nLines-1) if nLines>1 else 0  for i in range(nMultilocus) ]
 			M12 = [ posterior['M12'][i] for i in used_posterior ]
@@ -223,7 +222,8 @@ else:
 		N1 = randomBeta(posterior['N1'], nMultilocus)
 		if 'PAN' not in sys.argv[1]:
 			N2 = randomBeta(posterior['N2'], nMultilocus)
-			Na = randomBeta(posterior['Na'], nMultilocus)
+			#Na = randomBeta(posterior['Na'], nMultilocus)
+			Na = [ 1 for i in range(nMultilocus) ]
 			Tsplit = randomBeta(posterior['Tsplit'], nMultilocus)
 			founders2 = randomBeta(posterior['founders2'], nMultilocus)
 			Tdem2 = randomBeta(posterior['Tdem2'], nMultilocus)
@@ -264,6 +264,8 @@ else:
 					nBarriersM21 = [ i if i <= nLoci else nLoci for i in nBarriersM21 ]
 
 
+
+# print the prior for simulations
 if sys.argv[1] == "SC_1M_1N":
 	# secondary contact
 	# ms tbs 10000 -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -n 2 tbs -eM tbs 0 -ej tbs 2 1 -eN tbs tbs
@@ -607,6 +609,7 @@ if sys.argv[1] == "SI_1N":
 	outfile = open("priorfile.txt", "w")
 	outfile.write(priorfile)
 	outfile.close()
+
 
 if sys.argv[1] == "SI_2N":
 	# param monolocus: values that will be read by ms

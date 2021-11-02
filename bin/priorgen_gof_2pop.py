@@ -64,9 +64,9 @@ def randomBeta(posterior, nMultilocus):
 
 def produceBarriers(nLoci, nBarriers):
 	# produces a vector of 0 (non barrier) or 1 (barrier), of size equal to the number of loci
- 	barriers = [0]*nBarriers + [1]*(nLoci-nBarriers)
+	barriers = [0]*nBarriers + [1]*(nLoci-nBarriers)
 	shuffle(barriers)
- 	return(barriers)
+	return(barriers)
 
 
 help = "\t\033[1;31;40mTakes one model specifier, a number of multilocus simulations and a config.yaml file containing prior boundaries as arguments:\033[0m\n\t\t"
@@ -260,6 +260,7 @@ if sys.argv[1] == "SC_1M_1N":
 	outfile.write(priorfile)
 	outfile.close()
 
+
 if sys.argv[1] == "SC_1M_2N":
 	priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTsc\tM12\tM21\n"
 	for sim in range(nMultilocus):
@@ -270,6 +271,7 @@ if sys.argv[1] == "SC_1M_2N":
 		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
 		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
 		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+	
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}".format(nsam_tot[locus], nSNPs[locus], nsamA[locus], nsamB[locus], M12[sim], M21[sim], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 	outfile = open("priorfile.txt", "w")
@@ -304,7 +306,10 @@ if sys.argv[1] == "SC_2M_1N":
 	outfile.write(priorfile)
 	outfile.close()
 
+
+
 if sys.argv[1] == "SC_2M_2N":
+	# param monolocus: values that will be read by ms
 	if modeBarrier == "beta":
 		priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTsc\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
 	else:
@@ -332,12 +337,16 @@ if sys.argv[1] == "SC_2M_2N":
 		else:
 			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
 			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
+
+	
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}".format(nsam_tot[locus], nSNPs[locus], nsamA[locus], nsamB[locus], M12_vec[locus], M21_vec[locus], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 
 	outfile = open("priorfile.txt", "w")
 	outfile.write(priorfile)
 	outfile.close()
+
+
 
 if sys.argv[1] == "AM_1M_1N":
 	priorfile = "N1\tN2\tNa\tTsplit\tTam\tM12\tM21\n"
@@ -351,6 +360,8 @@ if sys.argv[1] == "AM_1M_1N":
 	outfile.write(priorfile)
 	outfile.close()
 
+
+
 if sys.argv[1] == "AM_1M_2N":
 	priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTam\tM12\tM21\n"
 	for sim in range(nMultilocus):
@@ -361,13 +372,17 @@ if sys.argv[1] == "AM_1M_2N":
 		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
 		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
 		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+	
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}".format(nsam_tot[locus], nSNPs[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], Tam[sim], M12[sim], M21[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 	outfile = open("priorfile.txt", "w")
 	outfile.write(priorfile)
 	outfile.close()
 
+
+
 if sys.argv[1] == "AM_2M_1N":
+	# param monolocus: values that will be read by ms
 	if modeBarrier == "beta":
 		priorfile = "N1\tN2\tNa\tTsplit\tTam\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
 	else:
@@ -395,7 +410,9 @@ if sys.argv[1] == "AM_2M_1N":
 	outfile.close()
 
 
+
 if sys.argv[1] == "AM_2M_2N":
+	# param monolocus: values that will be read by ms
 	if modeBarrier == "beta":
 		priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTam\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
 	else:
@@ -422,14 +439,18 @@ if sys.argv[1] == "AM_2M_2N":
 		else:
 			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
 			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
+	
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}".format(nsam_tot[locus], nSNPs[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], Tam[sim], M12_vec[locus], M21_vec[locus], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 	outfile = open("priorfile.txt", "w")
 	outfile.write(priorfile)
 	outfile.close()
 
+
+
 if sys.argv[1] == "IM_1M_1N":
-	priorfile = "N1\tN2\tNa\tTsplit\tM12\tM21\n"
+	# param monolocus: values that will be read by ms
+	priorfile = "N1\tN2\tNa\tfounders1\tfounders2\tTdem1\tTdem2\tTsplit\tM12\tM21\n"
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], M12[sim], M21[sim])
 		for locus in range(nLoci):
@@ -438,6 +459,7 @@ if sys.argv[1] == "IM_1M_1N":
 	outfile = open("priorfile.txt", "w")
 	outfile.write(priorfile)
 	outfile.close()
+
 
 
 if sys.argv[1] == "IM_1M_2N":
@@ -450,6 +472,7 @@ if sys.argv[1] == "IM_1M_2N":
 		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
 		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
 		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+	
 		for locus in range(nLoci):
 			# SC print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], nSNPs[locus], nsamA[locus], nsamB[locus], M12_vec[locus], M21_vec[locus], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 			print("{0}\t{1}\t{2}\t{3}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}".format(nsam_tot[locus], nSNPs[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], M12[sim], M21[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
@@ -457,7 +480,10 @@ if sys.argv[1] == "IM_1M_2N":
 	outfile.write(priorfile)
 	outfile.close()
 
+
+
 if sys.argv[1] == "IM_2M_1N":
+	# param monolocus: values that will be read by ms
 	if modeBarrier == "beta":
 		priorfile = "N1\tN2\tNa\tTsplit\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
 	else:
@@ -489,7 +515,9 @@ if sys.argv[1] == "IM_2M_1N":
 	outfile.close()
 
 
+
 if sys.argv[1] == "IM_2M_2N":
+	# param monolocus: values that will be read by ms
 	if modeBarrier == "beta":
 		priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
 	else:
@@ -505,6 +533,7 @@ if sys.argv[1] == "IM_2M_2N":
 		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
 		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
 		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+		
 		# vectors of size 'nLoci' containing parameters
 		if modeBarrier == "beta":
 			scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
@@ -516,12 +545,14 @@ if sys.argv[1] == "IM_2M_2N":
 		else:
 			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
 			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
+		
 		for locus in range(nLoci):
 			# SC print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], nSNPs[locus], nsamA[locus], nsamB[locus], M12_vec[locus], M21_vec[locus], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 			print("{0}\t{1}\t{2}\t{3}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}".format(nsam_tot[locus], nSNPs[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], M12_vec[locus], M21_vec[locus], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 	outfile = open("priorfile.txt", "w")
 	outfile.write(priorfile)
 	outfile.close()
+
 
 
 if sys.argv[1] == "SI_1N":
@@ -545,6 +576,7 @@ if sys.argv[1] == "SI_2N":
 		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
 		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
 		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+	
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}".format(nsam_tot[locus], nSNPs[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 	outfile = open("priorfile.txt", "w")

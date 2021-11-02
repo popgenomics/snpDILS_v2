@@ -40,6 +40,8 @@ if len(sys.argv) != 14:
 	print("\n\tex: submit_simulations_gof_2pop_popGrowth.py 1000 2 SI_1N flo mal sim_SI_1N SI_1N posterior_IM_1M_2N.txt beta\n\tto simulate 1000 multilocus simulations at the second iteration, in the folder sim_SI_1N") 
 	sys.exit(0)
 
+python = 'python2'
+
 outgroup = int(sys.argv[1])
 nmultilocus = int(sys.argv[2]) # 10000
 iteration = int(sys.argv[3]) # 2
@@ -68,15 +70,15 @@ else:
 
 mscommand = ""
 if "SI" in model:
-	mscommand = "-t tbs -r tbs tbs -I 2 tbs tbs 0 -n 1 tbs -n 2 tbs -en tbs 1 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs"
+	mscommand = "-t tbs -r 4 1000 -I 2 tbs tbs 0 -n 1 tbs -n 2 tbs -en tbs 1 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs"
 if "AM" in model:
-	mscommand = "-t tbs -r tbs tbs -I 2 tbs tbs 0 -n 1 tbs -n 2 tbs -en tbs 1 tbs -en tbs 2 tbs -ema tbs 2 0 tbs tbs 0 -ej tbs 2 1 -eN tbs tbs"
+	mscommand = "-t tbs -r 4 1000 -I 2 tbs tbs 0 -n 1 tbs -n 2 tbs -en tbs 1 tbs -en tbs 2 tbs -ema tbs 2 0 tbs tbs 0 -ej tbs 2 1 -eN tbs tbs"
 if "SC" in model:
-	mscommand = "-t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -n 2 tbs -en tbs 1 tbs -en tbs 2 tbs -eM tbs 0 -ej tbs 2 1 -eN tbs tbs"
+	mscommand = "-t tbs -r 4 1000 -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -n 2 tbs -en tbs 1 tbs -en tbs 2 tbs -eM tbs 0 -ej tbs 2 1 -eN tbs tbs"
 if "IM" in model:
-	mscommand = "-t tbs -r tbs tbs -I 2 tbs tbs 0 -n 1 tbs -n 2 tbs -en tbs 1 tbs -en tbs 2 tbs -m 1 2 tbs -m 2 1 tbs -ej tbs 2 1 -eN tbs tbs"
+	mscommand = "-t tbs -r 4 1000 -I 2 tbs tbs 0 -n 1 tbs -n 2 tbs -en tbs 1 tbs -en tbs 2 tbs -m 1 2 tbs -m 2 1 tbs -ej tbs 2 1 -eN tbs tbs"
 if "PAN" in model:
-	mscommand = "-t tbs -r tbs tbs -eN 0 tbs -eN tbs tbs"
+	mscommand = "-t tbs -r 4 1000 -eN 0 tbs -eN tbs tbs"
 
 if mscommand == "":
 	print("You specified a wrong model: SI_x, AM_x, AM_x, SC_x, PAN_x\n")
@@ -86,11 +88,11 @@ if mscommand == "":
 #tmp += "mkdir {0}/{1}/{2}_{3}; ".format(path, sub_dir_sim, sub_dir_model, iteration)
 tmp = "cp {0}/bpfile {0}/{1}/{2}_{3}; ".format(path, sub_dir_sim, sub_dir_model, iteration)
 tmp += "cd {0}/{1}/{2}_{3}; ".format(path, sub_dir_sim, sub_dir_model, iteration)
+tmp += "python {0}/priorgen_gof_2pop_popGrowth.py {1} {2} {3} {4} {5} | java -jar {0}/msms3.2rc-b163.jar tbs {6} {7} | pypy {0}/mscalc_2pop_SFS.py {8}".format(binpath, model, nmultilocus, posterior_file, modeBarrier, modePrior, nmultilocus*nlocus, mscommand, outgroup)
 
 #tmp += "{8}/priorgen_gof_2pop_popGrowth.py {0} {1} {2} {6} {7} | {8}/msnsam tbs {3} {4} | {8}/mscalc_2pop_SFS.py {5}".format(model, nmultilocus, posterior_file, nmultilocus*nlocus, mscommand, outgroup, modeBarrier, modePrior, binpath)
-tmp += "python {0}/priorgen_gof_2pop_popGrowth.py {1} {2} {3} {4} {5} | {0}/msnsam tbs {6} {7} | pypy {0}/mscalc_2pop_SFS.py {8}".format(binpath, model, nmultilocus, posterior_file, modeBarrier, modePrior, nmultilocus*nlocus, mscommand, outgroup)
 #tmp2 = 'sbatch --nodes=1 --ntasks-per-node=1 --time=02:00:00 -J {0}_{1} --wrap="{2}"\n'.format(model, iteration, tmp)
 
-print(tmp)
-os.system(tmp)
+#print(tmp)
+os.system(tmp) # to submit the job using slurm
 

@@ -34,7 +34,6 @@ from random import randint
 from numpy.random import uniform
 from numpy.random import binomial
 from numpy.random import beta
-from random import shuffle
 
 def produceBarriers(nLoci, nBarriers):
 	# produces a vector of 0 (non barrier) or 1 (barrier), of size equal to the number of loci

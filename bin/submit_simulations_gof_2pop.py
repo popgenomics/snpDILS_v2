@@ -54,7 +54,7 @@ posterior_file = sys.argv[9]
 timeStamp = sys.argv[10]
 modeBarrier = sys.argv[11] # beta / bimodal
 modePrior = sys.argv[12] # joint / disjoint / randomBeta
-binpath = sys.argv[13] 
+binpath = sys.argv[13]
 
 path = os.getcwd() + '/{0}'.format(timeStamp)
 
